@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
 
 import br.com.uol.pagseguro.urlshortener.exception.ShortUrlException;
 import br.com.uol.pagseguro.urlshortener.model.dto.ShortUrlDTO;
@@ -142,11 +143,14 @@ public class ShortUrlControllerTest {
 		
 		doReturn(Optional.empty()).when(shortUrlService).getShortUrlByAlias(eq(alias));
 		
-		ResponseEntity<Object> response = shortUrlController.getShortUrlStatistics(alias);
-		
-		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-		
-		verify(shortUrlService, times(1)).getShortUrlByAlias(eq(alias));
+		try {
+			shortUrlController.getShortUrlStatistics(alias);
+			fail("should throw ResponseStatusException");
+		} catch (ResponseStatusException e) {
+			assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+			assertEquals("404 NOT_FOUND \"Short URL not found\"", e.getMostSpecificCause().getMessage());
+			verify(shortUrlService, times(1)).getShortUrlByAlias(eq(alias));
+		}
 	}
 	
 	@Test

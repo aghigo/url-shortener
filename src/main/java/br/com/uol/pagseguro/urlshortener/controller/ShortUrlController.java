@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import br.com.uol.pagseguro.urlshortener.exception.ShortUrlException;
 import br.com.uol.pagseguro.urlshortener.model.dto.ShortUrlDTO;
@@ -83,8 +84,7 @@ public class ShortUrlController {
 			LOGGER.info("Response: {} {}", HttpStatus.OK, dto);
 			return ResponseEntity.ok().body(dto);
 		} else {
-			LOGGER.info("Long URL not found");
-			return ResponseEntity.notFound().build();
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Short URL not found");
 		}
 	}
 }
