@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,9 +31,6 @@ public class ShortUrlStatistics implements Serializable {
 	@Column
 	private long totalAccess;
 	
-	@OneToOne(mappedBy = "statistics")
-	private ShortUrl shortUrl;
-	
 	/**
 	 * Gets the total number of times the short URL was accessed
 	 * 
@@ -43,25 +39,11 @@ public class ShortUrlStatistics implements Serializable {
 	public long getTotalAccess() {
 		return totalAccess;
 	}
-	
-	/**
-	 * Gets the short URL from this statistics
-	 * 
-	 * @return the short URL from this statistics
-	 */
-	public ShortUrl getShortUrl() {
-		return shortUrl;
-	}
 
 	/**
 	 * Increments the current total access value by one
 	 */
 	public void incrementTotalAccess() {
 		totalAccess++;
-	}
-
-	@Override
-	public String toString() {
-		return "ShortUrlStatistics [id=" + id + ", totalAccess=" + totalAccess + ", shortUrl=" + shortUrl + "]";
 	}
 }

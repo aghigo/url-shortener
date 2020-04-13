@@ -22,8 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.uol.pagseguro.urlshortener.exception.ShortUrlException;
-import br.com.uol.pagseguro.urlshortener.model.dto.ShortUrlDTO;
-import br.com.uol.pagseguro.urlshortener.model.dto.ShortUrlStatisticsDTO;
 import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrl;
 import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrlStatistics;
 import br.com.uol.pagseguro.urlshortener.service.ShortUrlService;
@@ -59,9 +57,10 @@ public class ShortUrlControllerTest {
 		
 		try {
 			shortUrlController.shortUrl(longUrl);
-			fail("should throw ShortUrlException");
-		} catch (ShortUrlException e) {
-			assertEquals(exception.getMessage(), e.getMessage());
+			fail("should throw ResponseStatusException");
+		} catch (ResponseStatusException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getStatus());
+			assertEquals(exception, e.getCause());
 			verify(shortUrlService, times(1)).shortUrl(eq(longUrl));
 		}
 	}
@@ -82,14 +81,12 @@ public class ShortUrlControllerTest {
 				.statistics(statistics)
 				.build();
 		
-		ShortUrlDTO dto = ShortUrlDTO.of(shortUrl);
-		
 		doReturn(shortUrl).when(shortUrlService).shortUrl(eq(longUrl));
 		
-		ResponseEntity<ShortUrlDTO> response = shortUrlController.shortUrl(longUrl);
+		ResponseEntity<ShortUrl> response = shortUrlController.shortUrl(longUrl);
 		
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertEquals(dto, response.getBody());
+		assertEquals(shortUrl, response.getBody());
 		
 		verify(shortUrlService, times(1)).shortUrl(eq(longUrl));
 	}
@@ -163,8 +160,6 @@ public class ShortUrlControllerTest {
 				.id(1L)
 				.totalAccess(0)
 				.build();
-
-		ShortUrlStatisticsDTO dto = ShortUrlStatisticsDTO.of(statistics);
 				
 		ShortUrl shortUrl = ShortUrl.builder()
 				.alias(alias)
@@ -178,7 +173,7 @@ public class ShortUrlControllerTest {
 		ResponseEntity<Object> response = shortUrlController.getShortUrlStatistics(alias);
 		
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertEquals(dto, response.getBody());
+		assertEquals(statistics, response.getBody());
 		
 		verify(shortUrlService, times(1)).getShortUrlByAlias(eq(alias));
 	}

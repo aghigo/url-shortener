@@ -2,7 +2,9 @@ package br.com.uol.pagseguro.urlshortener.repository;
 
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrl;
 
@@ -27,4 +29,14 @@ public interface ShortUrlRepository extends CrudRepository<ShortUrl, String> {
 	 * @return Short URL from the original long URL. {@link Optional#empty()} if not found.
 	 */
 	Optional<ShortUrl> findByLongUrl(String longUrl);
+
+	/**
+	 * Finds short URL data by long URL or short URL
+	 * 
+	 * @param url
+	 * 
+	 * @return Short URL data, if found. {@link Optional#empty} if not found.
+	 */
+	@Query("SELECT u FROM ShortUrl u WHERE u.longUrl = :url OR u.shortUrl = :url")
+	Optional<ShortUrl> findByLongUrlOrShortUrl(@Param("url") String url);
 }

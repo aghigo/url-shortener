@@ -33,6 +33,9 @@ public class ShortUrl implements Serializable {
 	private String longUrl;
 	
 	@Column
+	private String shortUrl;
+	
+	@Column
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date creationDate;
 	

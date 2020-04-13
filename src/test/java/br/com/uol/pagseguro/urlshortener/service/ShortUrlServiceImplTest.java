@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.core.env.Environment;
 
 import br.com.uol.pagseguro.urlshortener.exception.ShortUrlException;
 import br.com.uol.pagseguro.urlshortener.generator.ShortUrlAliasGenerator;
@@ -41,12 +42,15 @@ public class ShortUrlServiceImplTest {
 	@Mock
 	private ShortUrlAliasGenerator shortUrlAliasGenerator;
 	
+	@Mock
+	private Environment environment;
+	
 	private ShortUrlService shortUrlService;
 	
 	@BeforeEach
 	public void setup () {
 		MockitoAnnotations.initMocks(this);
-		this.shortUrlService = new ShortUrlServiceImpl(shortUrlRepository, shortUrlStatisticsService, shortUrlAliasGenerator);
+		this.shortUrlService = new ShortUrlServiceImpl(environment, shortUrlRepository, shortUrlStatisticsService, shortUrlAliasGenerator);
 	}
 	
 	@Test
@@ -67,7 +71,7 @@ public class ShortUrlServiceImplTest {
 		String alias = "123";
 		Date creationDate = new Date();
 		
-		doReturn(Optional.empty()).when(shortUrlRepository).findByLongUrl(eq(longUrl));
+		doReturn(Optional.empty()).when(shortUrlRepository).findByLongUrlOrShortUrl(eq(longUrl));
 		
 		doReturn(alias).when(shortUrlAliasGenerator).generate(any(String.class));
 		
@@ -77,6 +81,7 @@ public class ShortUrlServiceImplTest {
 				.build();
 		doReturn(statistics).when(shortUrlStatisticsService).createNewStatistics();
 		
+		doReturn("http://localhost:8080/%s").when(environment).getProperty("application.domain.short-url.template");
 		
 		ShortUrl expectedShortUrl = ShortUrl.builder()
 				.alias(alias)
@@ -84,8 +89,6 @@ public class ShortUrlServiceImplTest {
 				.longUrl(longUrl)
 				.statistics(statistics)
 				.build();
-		
-		statistics.setShortUrl(expectedShortUrl);
 		
 		doReturn(expectedShortUrl).when(shortUrlRepository).save(any(ShortUrl.class));
 		
@@ -95,10 +98,9 @@ public class ShortUrlServiceImplTest {
 		assertEquals(longUrl, shortUrl.getLongUrl());
 		assertEquals(shortUrl.getCreationDate(), shortUrl.getCreationDate());
 		assertEquals(statistics.getId(), shortUrl.getStatistics().getId());
-		assertEquals(statistics.getShortUrl(), shortUrl.getStatistics().getShortUrl());
 		assertEquals(statistics.getTotalAccess(), shortUrl.getStatistics().getTotalAccess());
 		
-		verify(shortUrlRepository, times(1)).findByLongUrl(eq(longUrl));
+		verify(shortUrlRepository, times(1)).findByLongUrlOrShortUrl(eq(longUrl));
 		verify(shortUrlAliasGenerator, times(1)).generate(any(String.class));
 		verify(shortUrlStatisticsService, times(1)).createNewStatistics();
 		verify(shortUrlRepository, times(1)).save(any(ShortUrl.class));
@@ -126,9 +128,7 @@ public class ShortUrlServiceImplTest {
 				.statistics(statistics)
 				.build();
 		
-		statistics.setShortUrl(expectedShortUrl);
-		
-		doReturn(Optional.ofNullable(expectedShortUrl)).when(shortUrlRepository).findByLongUrl(eq(longUrl));
+		doReturn(Optional.ofNullable(expectedShortUrl)).when(shortUrlRepository).findByLongUrlOrShortUrl(eq(longUrl));
 		
 		doReturn(expectedShortUrl).when(shortUrlRepository).save(any(ShortUrl.class));
 		
@@ -138,10 +138,9 @@ public class ShortUrlServiceImplTest {
 		assertEquals(longUrl, shortUrl.getLongUrl());
 		assertEquals(shortUrl.getCreationDate(), shortUrl.getCreationDate());
 		assertEquals(statistics.getId(), shortUrl.getStatistics().getId());
-		assertEquals(statistics.getShortUrl(), shortUrl.getStatistics().getShortUrl());
 		assertEquals(statistics.getTotalAccess(), shortUrl.getStatistics().getTotalAccess());
 		
-		verify(shortUrlRepository, times(1)).findByLongUrl(eq(longUrl));
+		verify(shortUrlRepository, times(1)).findByLongUrlOrShortUrl(eq(longUrl));
 		verifyNoInteractions(shortUrlAliasGenerator);
 		verifyNoInteractions(shortUrlStatisticsService);
 		verify(shortUrlRepository, times(0)).save(any(ShortUrl.class));
@@ -177,8 +176,6 @@ public class ShortUrlServiceImplTest {
 				.longUrl(longUrl)
 				.statistics(statistics)
 				.build();
-		
-		statistics.setShortUrl(shortUrl);
 		
 		doReturn(Optional.ofNullable(shortUrl)).when(shortUrlRepository).findByAlias(eq(alias));
 		

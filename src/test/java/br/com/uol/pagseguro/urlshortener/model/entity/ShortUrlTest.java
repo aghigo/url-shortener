@@ -51,7 +51,9 @@ public class ShortUrlTest {
 				.totalAccess(1L)
 				.build();
 		
-		ShortUrl shortUrl = new ShortUrl(alias, longUrl, creationDate, statistics);
+		String domainShortUrl = "http://localhost:8080/" + alias;
+		
+		ShortUrl shortUrl = new ShortUrl(alias, longUrl, domainShortUrl, creationDate, statistics);
 		
 		assertEquals(alias, shortUrl.getAlias());
 		assertEquals(creationDate, shortUrl.getCreationDate());
@@ -119,7 +121,7 @@ public class ShortUrlTest {
 				.statistics(statistics)
 				.build();
 		
-		int expected = -65860250;
+		int expected = 396889866;
 		
 		assertEquals(expected, shortUrl.hashCode());
 	}
@@ -129,6 +131,7 @@ public class ShortUrlTest {
 		String alias = "123";
 		Date creationDate = new Date();
 		String longUrl = "http://www.example.com";
+		String shortUrlAddress = "http://localhost:8080/" + alias;
 		ShortUrlStatistics statistics = ShortUrlStatistics.builder()
 				.id(1L)
 				.totalAccess(1L)
@@ -138,10 +141,11 @@ public class ShortUrlTest {
 				.alias(alias)
 				.creationDate(creationDate)
 				.longUrl(longUrl)
+				.shortUrl(shortUrlAddress)
 				.statistics(statistics)
 				.build();
 		
-		String expected = "ShortUrl(alias=" + alias + ", longUrl=" + longUrl + ", creationDate=" + creationDate + ", statistics=" + statistics + ")";
+		String expected = "ShortUrl(alias=" + alias + ", longUrl=" + longUrl + ", shortUrl=" + shortUrlAddress + ", creationDate=" + creationDate + ", statistics=" + statistics + ")";
 		
 		assertEquals(expected, shortUrl.toString());
 	}

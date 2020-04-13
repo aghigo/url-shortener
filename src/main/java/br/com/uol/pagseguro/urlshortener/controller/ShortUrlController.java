@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.uol.pagseguro.urlshortener.exception.ShortUrlException;
-import br.com.uol.pagseguro.urlshortener.model.dto.ShortUrlDTO;
-import br.com.uol.pagseguro.urlshortener.model.dto.ShortUrlStatisticsDTO;
 import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrl;
 import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrlStatistics;
 import br.com.uol.pagseguro.urlshortener.service.ShortUrlService;
@@ -41,16 +39,17 @@ public class ShortUrlController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<ShortUrlDTO> shortUrl(@RequestParam("longUrl") String longUrl) throws ShortUrlException {
-		LOGGER.info("{} /", HttpMethod.POST);
-		LOGGER.info("{}", longUrl);
+	public ResponseEntity<ShortUrl> shortUrl(@RequestParam("longUrl") String longUrl) {
+		LOGGER.info("Request: {} / longUrl = {}", HttpMethod.POST, longUrl);
 		
-		ShortUrl shortUrl = shortUrlService.shortUrl(longUrl);
-		ShortUrlDTO dto = ShortUrlDTO.of(shortUrl);
-		
-		LOGGER.info("Response: {}", HttpStatus.OK);
-		LOGGER.info("Body: {}", dto);
-		return ResponseEntity.ok(dto);
+		try {
+			ShortUrl shortUrl = shortUrlService.shortUrl(longUrl);
+			
+			LOGGER.info("Response: {} {}", HttpStatus.OK, shortUrl);
+			return ResponseEntity.ok(shortUrl);
+		} catch (ShortUrlException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+		}
 	}
 	
 	@GetMapping("/{alias}")
@@ -73,16 +72,15 @@ public class ShortUrlController {
 	
 	@GetMapping("/{alias}/statistics")
 	public ResponseEntity<Object> getShortUrlStatistics(@PathVariable("alias") String alias) {
-		LOGGER.info("{} /{}/statistics", HttpMethod.GET, alias);
+		LOGGER.info("Request: {} /{}/statistics", HttpMethod.GET, alias);
 		
 		Optional<ShortUrl> shortUrl = shortUrlService.getShortUrlByAlias(alias);
 		
 		if(shortUrl.isPresent()) {
 			ShortUrlStatistics statistics = shortUrl.get().getStatistics();
-			ShortUrlStatisticsDTO dto = ShortUrlStatisticsDTO.of(statistics);
 			
-			LOGGER.info("Response: {} {}", HttpStatus.OK, dto);
-			return ResponseEntity.ok().body(dto);
+			LOGGER.info("Response: {} {}", HttpStatus.OK, statistics);
+			return ResponseEntity.ok().body(statistics);
 		} else {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Short URL not found");
 		}

@@ -1,8 +1,8 @@
 package br.com.uol.pagseguro.urlshortener.controller;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,10 +18,11 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import br.com.uol.pagseguro.urlshortener.application.UrlShortenerApplication;
-import br.com.uol.pagseguro.urlshortener.model.dto.ShortUrlDTO;
+import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrl;
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
 
@@ -101,7 +102,29 @@ public class ShortUrlControllerIntegrationTest {
 	}
 	
 	@Test
-	@Order(4)
+	@Order(5)
+	public void short_long_url_passing_already_short_url_should_return_short_url () {
+		String longUrl = "https://pagseguro.uol.com.br/";
+		
+		ShortUrl shortUrl = given().
+				formParam("longUrl", longUrl).
+			when()
+				.post("/")
+			.body().as(ShortUrl.class);
+		
+		given().
+			formParam("longUrl", shortUrl.getShortUrl()).
+		when()
+			.post("/")
+		.then()
+			.statusCode(HttpStatus.OK.value())
+			.body("alias", equalTo(shortUrl.getAlias())).and()
+			.body("longUrl", equalTo(shortUrl.getLongUrl())).and()
+			.body("shortUrl", equalTo(shortUrl.getShortUrl()));	
+	}
+	
+	@Test
+	@Order(6)
 	public void redirect_to_original_url_passing_non_existing_short_url_alias_should_return_not_found_error () {
 		String invalidShortUrlId = "24u04u2309udidchinvxcklnvcxcvc";
 		
@@ -113,31 +136,31 @@ public class ShortUrlControllerIntegrationTest {
 	}
 	
 	@Test
-	@Order(5)
+	@Order(7)
 	public void redirect_to_original_url_passing_valid_short_url_alias_and_original_url_found_should_redirect_to_long_url () {
-		String longUrl = "https://www.google.com";
-		
-		String longUrlResponseBody = restTemplate.getForObject(longUrl, String.class);
-		
-		String googleImageElementHtml = "<img alt=\"Google\"";
-		
-		assertTrue(longUrlResponseBody.contains(googleImageElementHtml));
+		String longUrl = "https://pagseguro.uol.com.br";
 
-		ShortUrlDTO shortUrl = given().
+		ResponseEntity<String> longUrlResponse = restTemplate.getForEntity(longUrl, String.class);
+		
+		assertTrue(longUrlResponse.getHeaders().containsKey("Set-Cookie"));
+		assertTrue(longUrlResponse.getHeaders().get("Set-Cookie").get(0).contains("Domain=.pagseguro.uol.com.br"));
+		
+		ShortUrl shortUrl = given().
 								formParam("longUrl", longUrl).
 							when()
 								.post("/")
-							.body().as(ShortUrlDTO.class);
+							.body().as(ShortUrl.class);
 		
 		given().
 		when()
 			.get("/" + shortUrl.getAlias()).
 		then().
-			body(stringContainsInOrder(googleImageElementHtml));
+			statusCode(HttpStatus.OK.value()).
+			 header("Set-Cookie", containsString("Domain=.pagseguro.uol.com.br"));
 	}
 	
 	@Test
-	@Order(6)
+	@Order(8)
 	public void get_short_url_statistics_passing_non_existing_alias_should_return_not_found_error () {
 		String alias = "xxx";
 		
@@ -154,15 +177,15 @@ public class ShortUrlControllerIntegrationTest {
 	}
 	
 	@Test
-	@Order(7)
+	@Order(9)
 	public void get_short_url_statistics_passing_existing_alias_should_return_statistics_data () {
 		String longUrl = "https://www.example.com";
 		
-		ShortUrlDTO shortUrl = given().
+		ShortUrl shortUrl = given().
 				formParam("longUrl", longUrl).
 			when()
 				.post("/")
-			.body().as(ShortUrlDTO.class);
+			.body().as(ShortUrl.class);
 		
 		given().
 		when()
