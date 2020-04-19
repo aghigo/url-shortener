@@ -1,4 +1,4 @@
-package br.com.uol.pagseguro.urlshortener.security;
+package br.com.uol.pagseguro.urlshortener.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;

@@ -1,4 +1,4 @@
-package br.com.uol.pagseguro.urlshortener.application;
+package br.com.uol.pagseguro.urlshortener.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
