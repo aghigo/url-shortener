@@ -7,6 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
+
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -39,14 +46,24 @@ public class ShortUrlControllerIntegrationTest {
 	
 	private RestTemplate restTemplate;
 	
+	private Properties properties;
+	
 	@BeforeEach
-	private void configureRestAssured() {
+	public void readApplicationProperties() throws IOException {
+		try (BufferedReader reader = new BufferedReader(new FileReader(new File("src/main/resources/application.properties")))) {
+			this.properties = new Properties();
+			this.properties.load(reader);
+		}
+	}
+	
+	@BeforeEach
+	public void configureRestAssured() {
 		RestAssured.port = this.port;
 		RestAssured.defaultParser = Parser.JSON;
 	}
 	
 	@BeforeEach
-	private void configureRestTemplate() {
+	public void configureRestTemplate() {
 		this.restTemplate = new RestTemplate();
 	}
 	
@@ -56,12 +73,26 @@ public class ShortUrlControllerIntegrationTest {
         assertTrue(port > 0);
         assertEquals(this.port, RestAssured.port);
         assertNotNull(restTemplate);
+        assertNotNull(properties);
     }
-
+	
 	@Test
 	@Order(2)
+	public void short_long_url_when_not_authenticated_should_return_unauthorized_error() {
+		given().
+		when().
+			post("/").
+		then().
+			statusCode(HttpStatus.UNAUTHORIZED.value()).and().
+			body("error", equalTo("unauthorized")).and().
+			body("error_description", equalTo("Full authentication is required to access this resource"));
+	}
+
+	@Test
+	@Order(3)
 	public void short_long_url_passing_no_url_should_return_bad_request_error () {
 		given().
+			header("Authorization", "Bearer " + getAccessToken()).
 		when().
 			post("/").
 		then().
@@ -69,11 +100,12 @@ public class ShortUrlControllerIntegrationTest {
 	}
 	
 	@Test
-	@Order(3)
+	@Order(4)
 	public void short_long_url_passing_invalid_long_url_should_return_bad_request_error () {
 		String invalidLongUrl = "DGUIHDJFHDF";
 		
 		given().
+			header("Authorization", "Bearer " + getAccessToken()).
 			formParam("longUrl", invalidLongUrl).
 		when().
 			post("/").
@@ -86,12 +118,13 @@ public class ShortUrlControllerIntegrationTest {
 	}
 	
 	@Test
-	@Order(4)
+	@Order(5)
 	public void short_long_url_passing_valid_long_url_should_create_new_short_url_and_return_short_url () {
 		String longUrl = "https://pagseguro.uol.com.br/";
 		String alias = "laFvIy";
 		
 		given().
+			header("Authorization", "Bearer " + getAccessToken()).
 			formParam("longUrl", longUrl).
 		when().
 			post("/").
@@ -102,17 +135,19 @@ public class ShortUrlControllerIntegrationTest {
 	}
 	
 	@Test
-	@Order(5)
+	@Order(6)
 	public void short_long_url_passing_already_short_url_should_return_short_url () {
 		String longUrl = "https://pagseguro.uol.com.br/";
 		
 		ShortUrl shortUrl = given().
+				header("Authorization", "Bearer " + getAccessToken()).
 				formParam("longUrl", longUrl).
 			when()
 				.post("/")
 			.body().as(ShortUrl.class);
 		
 		given().
+			header("Authorization", "Bearer " + getAccessToken()).
 			formParam("longUrl", shortUrl.getShortUrl()).
 		when()
 			.post("/")
@@ -124,7 +159,7 @@ public class ShortUrlControllerIntegrationTest {
 	}
 	
 	@Test
-	@Order(6)
+	@Order(7)
 	public void redirect_to_original_url_passing_non_existing_short_url_alias_should_return_not_found_error () {
 		String invalidShortUrlId = "24u04u2309udidchinvxcklnvcxcvc";
 		
@@ -136,7 +171,7 @@ public class ShortUrlControllerIntegrationTest {
 	}
 	
 	@Test
-	@Order(7)
+	@Order(8)
 	public void redirect_to_original_url_passing_valid_short_url_alias_and_original_url_found_should_redirect_to_long_url () {
 		String longUrl = "https://pagseguro.uol.com.br";
 
@@ -146,6 +181,7 @@ public class ShortUrlControllerIntegrationTest {
 		assertTrue(longUrlResponse.getHeaders().get("Set-Cookie").get(0).contains("Domain=.pagseguro.uol.com.br"));
 		
 		ShortUrl shortUrl = given().
+								header("Authorization", "Bearer " + getAccessToken()).
 								formParam("longUrl", longUrl).
 							when()
 								.post("/")
@@ -160,11 +196,28 @@ public class ShortUrlControllerIntegrationTest {
 	}
 	
 	@Test
-	@Order(8)
+	@Order(9)
+	public void get_short_url_statistics_when_not_authenticated_should_return_unauthorized_error () {
+		String alias = "xxx";
+		
+		given().
+			header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE).
+		when().
+			get("/" + alias + "/statistics").
+		then().
+			statusCode(HttpStatus.UNAUTHORIZED.value()).
+				and().
+			body("error", equalTo("unauthorized")).and().
+			body("error_description", equalTo("Full authentication is required to access this resource"));
+	}
+	
+	@Test
+	@Order(10)
 	public void get_short_url_statistics_passing_non_existing_alias_should_return_not_found_error () {
 		String alias = "xxx";
 		
 		given().
+			header("Authorization", "Bearer " + getAccessToken()).
 			header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE).
 		when().
 			get("/" + alias + "/statistics").
@@ -177,11 +230,12 @@ public class ShortUrlControllerIntegrationTest {
 	}
 	
 	@Test
-	@Order(9)
+	@Order(11)
 	public void get_short_url_statistics_passing_existing_alias_should_return_statistics_data () {
 		String longUrl = "https://www.example.com";
 		
 		ShortUrl shortUrl = given().
+				header("Authorization", "Bearer " + getAccessToken()).
 				formParam("longUrl", longUrl).
 			when()
 				.post("/")
@@ -196,6 +250,7 @@ public class ShortUrlControllerIntegrationTest {
 			.get("/" + shortUrl.getAlias());
 		
 		given().
+			header("Authorization", "Bearer " + getAccessToken()).
 			header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE).
 		when().
 			get("/" + shortUrl.getAlias() + "/statistics").
@@ -203,5 +258,24 @@ public class ShortUrlControllerIntegrationTest {
 			statusCode(HttpStatus.OK.value()).
 				and().
 			body("totalAccess", equalTo(2));
+	}
+	
+	private String getBasicAuthToken() {
+		String clientId = properties.getProperty("security.oauth2.client.client-id");
+		String clientSecret = properties.getProperty("security.oauth2.client.client-secret");
+		String toEncode = clientId + ":" + clientSecret;
+		return new String(Base64.encodeBase64(toEncode.getBytes()));
+	}
+	
+	private String getAccessToken() {
+		String token = "Basic " + getBasicAuthToken();
+		
+		return given().
+				formParam("grant_type", "password").
+				formParam("username", "user1").
+				formParam("password", "user@2020").
+				header("Authorization", token).
+			when().
+				post("/oauth/token").getBody().jsonPath().getString("access_token");
 	}
 }
