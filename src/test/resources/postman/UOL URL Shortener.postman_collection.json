@@ -1,0 +1,173 @@
+{
+	"info": {
+		"_postman_id": "49f7e8d4-2fd6-4f05-bcbc-428f564d4cba",
+		"name": "UOL URL Shortener",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/oauth/token",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "1a576eab-35b9-42de-9c84-07ab0e371b7f",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "6e5aa968-fe22-4e16-a49a-6037f04c6043",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "user1",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "user@2020",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://uolurlshortener-env.eba-qxnpezmw.us-east-2.elasticbeanstalk.com/oauth/token",
+					"protocol": "http",
+					"host": [
+						"uolurlshortener-env",
+						"eba-qxnpezmw",
+						"us-east-2",
+						"elasticbeanstalk",
+						"com"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				},
+				"description": "Authenticates using oauth and gets an access token"
+			},
+			"response": []
+		},
+		{
+			"name": "Short URL",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "4050c63a-acb5-4233-9914-b113c7173d27",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "longUrl",
+						"value": "http://www.google.com.br",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "longUrl",
+							"value": "http://www.google.com.br",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://uolurlshortener-env.eba-qxnpezmw.us-east-2.elasticbeanstalk.com",
+					"protocol": "http",
+					"host": [
+						"uolurlshortener-env",
+						"eba-qxnpezmw",
+						"us-east-2",
+						"elasticbeanstalk",
+						"com"
+					]
+				},
+				"description": "Short a long URL"
+			},
+			"response": []
+		},
+		{
+			"name": "/37CVId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://uolurlshortener-env.eba-qxnpezmw.us-east-2.elasticbeanstalk.com/37CVId",
+					"protocol": "http",
+					"host": [
+						"uolurlshortener-env",
+						"eba-qxnpezmw",
+						"us-east-2",
+						"elasticbeanstalk",
+						"com"
+					],
+					"path": [
+						"37CVId"
+					]
+				},
+				"description": "Redirects to long URL"
+			},
+			"response": []
+		},
+		{
+			"name": "/37CVId/statistics",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "4050c63a-acb5-4233-9914-b113c7173d27",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://uolurlshortener-env.eba-qxnpezmw.us-east-2.elasticbeanstalk.com/37CVId/statistics",
+					"protocol": "http",
+					"host": [
+						"uolurlshortener-env",
+						"eba-qxnpezmw",
+						"us-east-2",
+						"elasticbeanstalk",
+						"com"
+					],
+					"path": [
+						"37CVId",
+						"statistics"
+					]
+				},
+				"description": "Get statistics data about short URL access"
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
