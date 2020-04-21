@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
  */
 public class ShortUrlDomainTest {
 	@Test
+	@Tag("UnitTest")
 	public void test_no_args_constructor() {
 		ShortUrlDomain domain = new ShortUrlDomain();
 		
@@ -31,6 +33,7 @@ public class ShortUrlDomainTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void test_all_args_constructor() {
 		String baseUrl = "http://localhost:8080";
 		
@@ -46,6 +49,7 @@ public class ShortUrlDomainTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void test_builder() {
 		String baseUrl = "http://localhost:8080";
 		
@@ -65,6 +69,7 @@ public class ShortUrlDomainTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void test_toString() {
 		String baseUrl = "http://localhost:8080";
 		
@@ -84,6 +89,7 @@ public class ShortUrlDomainTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	@SuppressWarnings("unlikely-arg-type")
 	public void test_equals() {
 		String baseUrl = "http://localhost:8080";
@@ -119,6 +125,7 @@ public class ShortUrlDomainTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void test_hashCode() {
 		String baseUrl = "http://localhost:8080";
 		

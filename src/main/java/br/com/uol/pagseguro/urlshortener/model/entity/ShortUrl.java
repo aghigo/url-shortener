@@ -6,9 +6,11 @@ import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -22,6 +24,7 @@ import lombok.NoArgsConstructor;
  * Short URL representation of a long URL
  */
 @Entity
+@Table(name = "short_url")
 @Data
 @Builder
 @NoArgsConstructor
@@ -32,17 +35,17 @@ public class ShortUrl implements Serializable {
 	@Id
 	private String alias;
 	
-	@Column
+	@Column(unique = true)
 	private String longUrl;
 	
 	@Column
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date creationDate;
 	
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	private ShortUrlStatistics statistics;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	private ShortUrlDomain domain;
 	
 	/**
@@ -80,7 +83,7 @@ public class ShortUrl implements Serializable {
 	/**
 	 * Gets the short URL
 	 * 
-	 * <p>Note: The short URL address is resolved from its domain URL with alias placeholder
+	 * <p>Note: The short URL address is resolved from its domain base URL
 	 * <p>Example:
 	 * <p>Domain URL: http://www.example.com/
 	 * <p>Alias: 123abc

@@ -18,6 +18,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 		"br.com.uol.pagseguro.urlshortener.model.entity",
 		"br.com.uol.pagseguro.urlshortener.repository",
 		"br.com.uol.pagseguro.urlshortener.config",
+		"br.com.uol.pagseguro.urlshortener.logger",
 		"br.com.uol.pagseguro.urlshortener.config.security",
 		"br.com.uol.pagseguro.urlshortener.service",
 		"br.com.uol.pagseguro.urlshortener.validator"

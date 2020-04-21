@@ -7,18 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Properties;
-
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -44,17 +40,13 @@ public class ShortUrlControllerIntegrationTest {
 	@LocalServerPort
     private int port;
 	
+	@Value("${security.oauth2.client.client-id}")
+	private String clientId;
+	
+	@Value("${security.oauth2.client.client-secret}")
+	private String clientSecret;
+	
 	private RestTemplate restTemplate;
-	
-	private Properties properties;
-	
-	@BeforeEach
-	public void readApplicationProperties() throws IOException {
-		try (BufferedReader reader = new BufferedReader(new FileReader(new File("src/main/resources/application.properties")))) {
-			this.properties = new Properties();
-			this.properties.load(reader);
-		}
-	}
 	
 	@BeforeEach
 	public void configureRestAssured() {
@@ -68,16 +60,17 @@ public class ShortUrlControllerIntegrationTest {
 	}
 	
 	@Test
-    @Order(1)    
+    @Order(1)
+	@Tag("IntegrationTest")
     public void test_loaded_configurations() {
         assertTrue(port > 0);
         assertEquals(this.port, RestAssured.port);
         assertNotNull(restTemplate);
-        assertNotNull(properties);
     }
 	
 	@Test
 	@Order(2)
+	@Tag("IntegrationTest")
 	public void short_long_url_when_not_authenticated_should_return_unauthorized_error() {
 		given().
 		when().
@@ -90,6 +83,7 @@ public class ShortUrlControllerIntegrationTest {
 
 	@Test
 	@Order(3)
+	@Tag("IntegrationTest")
 	public void short_long_url_passing_no_url_should_return_bad_request_error () {
 		given().
 			header("Authorization", "Bearer " + getAccessToken()).
@@ -101,6 +95,7 @@ public class ShortUrlControllerIntegrationTest {
 	
 	@Test
 	@Order(4)
+	@Tag("IntegrationTest")
 	public void short_long_url_passing_invalid_long_url_should_return_bad_request_error () {
 		String invalidLongUrl = "DGUIHDJFHDF";
 		
@@ -119,6 +114,7 @@ public class ShortUrlControllerIntegrationTest {
 	
 	@Test
 	@Order(5)
+	@Tag("IntegrationTest")
 	public void short_long_url_passing_valid_long_url_should_create_new_short_url_and_return_short_url () {
 		String longUrl = "https://pagseguro.uol.com.br/";
 		String alias = "laFvIy";
@@ -136,6 +132,7 @@ public class ShortUrlControllerIntegrationTest {
 	
 	@Test
 	@Order(6)
+	@Tag("IntegrationTest")
 	public void short_long_url_passing_already_short_url_should_return_short_url () {
 		String longUrl = "https://pagseguro.uol.com.br/";
 		
@@ -160,6 +157,7 @@ public class ShortUrlControllerIntegrationTest {
 	
 	@Test
 	@Order(7)
+	@Tag("IntegrationTest")
 	public void redirect_to_original_url_passing_non_existing_short_url_alias_should_return_not_found_error () {
 		String invalidShortUrlId = "24u04u2309udidchinvxcklnvcxcvc";
 		
@@ -172,6 +170,7 @@ public class ShortUrlControllerIntegrationTest {
 	
 	@Test
 	@Order(8)
+	@Tag("IntegrationTest")
 	public void redirect_to_original_url_passing_valid_short_url_alias_and_original_url_found_should_redirect_to_long_url () {
 		String longUrl = "https://pagseguro.uol.com.br";
 
@@ -197,6 +196,7 @@ public class ShortUrlControllerIntegrationTest {
 	
 	@Test
 	@Order(9)
+	@Tag("IntegrationTest")
 	public void get_short_url_statistics_when_not_authenticated_should_return_unauthorized_error () {
 		String alias = "xxx";
 		
@@ -213,6 +213,7 @@ public class ShortUrlControllerIntegrationTest {
 	
 	@Test
 	@Order(10)
+	@Tag("IntegrationTest")
 	public void get_short_url_statistics_passing_non_existing_alias_should_return_not_found_error () {
 		String alias = "xxx";
 		
@@ -231,6 +232,7 @@ public class ShortUrlControllerIntegrationTest {
 	
 	@Test
 	@Order(11)
+	@Tag("IntegrationTest")
 	public void get_short_url_statistics_passing_existing_alias_should_return_statistics_data () {
 		String longUrl = "https://www.example.com";
 		
@@ -257,12 +259,11 @@ public class ShortUrlControllerIntegrationTest {
 		then().
 			statusCode(HttpStatus.OK.value()).
 				and().
-			body("totalAccess", equalTo(2));
+			body("totalAccess", equalTo(2)).and().
+			body(containsString("lastAccess"));
 	}
 	
 	private String getBasicAuthToken() {
-		String clientId = properties.getProperty("security.oauth2.client.client-id");
-		String clientSecret = properties.getProperty("security.oauth2.client.client-secret");
 		String toEncode = clientId + ":" + clientSecret;
 		return new String(Base64.encodeBase64(toEncode.getBytes()));
 	}

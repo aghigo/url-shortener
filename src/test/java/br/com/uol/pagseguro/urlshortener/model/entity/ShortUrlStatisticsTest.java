@@ -2,6 +2,7 @@ package br.com.uol.pagseguro.urlshortener.model.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
  */
 public class ShortUrlStatisticsTest {
 	@Test
+	@Tag("UnitTest")
 	public void testNoArgsConstructor() {
 		ShortUrlStatistics shortUrlStatistics = new ShortUrlStatistics();
 		

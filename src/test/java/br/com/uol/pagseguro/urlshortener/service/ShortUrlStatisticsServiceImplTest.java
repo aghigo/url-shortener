@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -31,6 +32,7 @@ public class ShortUrlStatisticsServiceImplTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void incrementTotalAccess_should_increment_total_access_value_by_one () {
 		int totalAccess = 1;
 		
@@ -45,6 +47,7 @@ public class ShortUrlStatisticsServiceImplTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void createNewStatistics_should_return_new_initialized_statistics_data () {
 		ArgumentCaptor<ShortUrlStatistics> argumentCaptor = ArgumentCaptor.forClass(ShortUrlStatistics.class);
 		

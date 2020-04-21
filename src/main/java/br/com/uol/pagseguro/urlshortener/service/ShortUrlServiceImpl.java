@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import br.com.uol.pagseguro.urlshortener.exception.ShortUrlException;
@@ -16,6 +18,7 @@ import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrlStatistics;
 import br.com.uol.pagseguro.urlshortener.repository.ShortUrlRepository;
 
 @Service
+@CacheConfig(cacheNames = "shortUrlCache")
 public class ShortUrlServiceImpl implements ShortUrlService {
 	private ShortUrlRepository shortUrlRepository;
 	private ShortUrlStatisticsService shortUrlStatisticsService;
@@ -30,7 +33,8 @@ public class ShortUrlServiceImpl implements ShortUrlService {
 		this.shortUrlDomainService = shortUrlDomainService;
 		this.shortUrlAliasGenerator = shortUrlAliasGenerator;
 	}
-
+	
+	@Cacheable(condition = "#p1 != null")
 	@Override
 	public ShortUrl shortUrl(String longUrl) throws ShortUrlException {
 		URL url = null;
@@ -63,7 +67,8 @@ public class ShortUrlServiceImpl implements ShortUrlService {
 		
 		return shortUrlRepository.save(shortUrl);
 	}
-
+	
+	@Cacheable(condition = "#p1 != null")
 	@Override
 	public Optional<ShortUrl> getShortUrlByAlias(String alias) {
 		return shortUrlRepository.findByAlias(alias);

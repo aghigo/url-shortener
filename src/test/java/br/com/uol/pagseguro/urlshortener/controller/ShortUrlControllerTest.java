@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -51,6 +52,7 @@ public class ShortUrlControllerTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void shortUrl_when_invalid_url_should_return_bad_request_error() throws ShortUrlException {
 		String longUrl = "23xxxxx";
 		
@@ -68,6 +70,7 @@ public class ShortUrlControllerTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void shortUrl_when_valid_url_should_return_short_url() throws ShortUrlException {
 		String longUrl = "http://www.example.com";
 		
@@ -96,6 +99,7 @@ public class ShortUrlControllerTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void redirectToOriginalUrl_when_alias_does_not_exist_should_return_not_found_error () {
 		String shortUrlAlias = "xxxxxxxxxx";
 		
@@ -110,6 +114,7 @@ public class ShortUrlControllerTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void redirectToOriginalUrl_when_alias_does_exist_should_redirect_to_long_url() {
 		String shortUrlAlias = "123123";
 		String originalUrl = "http://www.google.com.br";
@@ -139,6 +144,7 @@ public class ShortUrlControllerTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void getShortUrlStatistics_when_invalid_alias_should_return_not_found_error () {
 		String alias = "123123";
 		
@@ -155,6 +161,7 @@ public class ShortUrlControllerTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void getShortUrlStatistics_when_valid_alias_should_return_short_url_statistics () {
 		String alias = "123123";
 		String originalUrl = "http://www.google.com.br";

@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -54,6 +55,7 @@ public class ShortUrlServiceImplTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void shortUrl_passing_invalid_url_should_throw_ShortUrlException () {
 		String longUrl = "123123123123xxxx";
 		
@@ -66,6 +68,7 @@ public class ShortUrlServiceImplTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void shortUrl_passing_valid_url_but_still_not_shorted_should_generate_new_alias_and_persist_and_return_shorted_url () throws ShortUrlException {
 		String longUrl = "http://www.example.com";
 		String alias = "123";
@@ -112,6 +115,7 @@ public class ShortUrlServiceImplTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void shortUrl_passing_valid_url_already_shorted_should_return_shorted_url_directly_without_generation_new_alias_and_without_persisting () throws ShortUrlException {
 		String longUrl = "http://www.example.com";
 		String alias = "123";
@@ -152,6 +156,7 @@ public class ShortUrlServiceImplTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void getShortUrlByAlias_passing_invalid_alias_should_return_empty_optional () {
 		String alias = "xxxx";
 		
@@ -165,6 +170,7 @@ public class ShortUrlServiceImplTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void getShortUrlByAlias_passing_valid_alias_should_return_shortUrl() {
 		String alias = "123";
 		Date creationDate = new Date();

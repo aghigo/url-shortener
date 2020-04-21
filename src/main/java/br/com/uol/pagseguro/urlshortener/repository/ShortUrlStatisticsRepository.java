@@ -6,5 +6,7 @@ import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrlStatistics;
 
 /**
  * Repository for short URL statistics data persistence
+ * 
+ * @see ShortUrlStatistics
  */
 public interface ShortUrlStatisticsRepository extends CrudRepository<ShortUrlStatistics, Long> {}

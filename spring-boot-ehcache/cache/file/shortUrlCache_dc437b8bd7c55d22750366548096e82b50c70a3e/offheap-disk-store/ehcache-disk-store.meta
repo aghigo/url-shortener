@@ -1,0 +1,4 @@
+#Key and value types
+#Tue Apr 21 17:02:49 GMT-03:00 2020
+keyType=java.lang.String
+valueType=br.com.uol.pagseguro.urlshortener.model.entity.ShortUrl

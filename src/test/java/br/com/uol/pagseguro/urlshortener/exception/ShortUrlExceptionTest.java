@@ -2,6 +2,7 @@ package br.com.uol.pagseguro.urlshortener.exception;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
  */
 public class ShortUrlExceptionTest {
 	@Test
+	@Tag("UnitTest")
 	public void messageArgConstructor() {
 		String message = "testing exception";
 		
@@ -21,6 +23,7 @@ public class ShortUrlExceptionTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void causeArgConstructor() {
 		Exception cause = new Exception();
 		
@@ -30,6 +33,7 @@ public class ShortUrlExceptionTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void messageAndCauseArgsConstructor() {
 		String message = "testing exception";
 		Exception cause = new Exception();

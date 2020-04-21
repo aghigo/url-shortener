@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Date;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Test;
  */
 public class ShortUrlTest {
 	@Test
+	@Tag("UnitTest")
 	public void testNoArgsConstructor() {
 		ShortUrl shortUrl = new ShortUrl();
 		
@@ -50,6 +52,7 @@ public class ShortUrlTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void testAllArgsConstructor() {
 		String alias = "123";
 		Date creationDate = new Date();
@@ -75,6 +78,7 @@ public class ShortUrlTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void testBuilder() {
 		String alias = "123";
 		Date creationDate = new Date();
@@ -106,6 +110,7 @@ public class ShortUrlTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void testEquals() {
 		String alias = "123";
 		Date creationDate = new Date();
@@ -136,9 +141,11 @@ public class ShortUrlTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void testHashCode() {
 		String alias = "123";
 		String longUrl = "http://www.example.com";
+		
 		ShortUrlStatistics statistics = ShortUrlStatistics.builder()
 				.id(1L)
 				.totalAccess(1L)
@@ -157,12 +164,13 @@ public class ShortUrlTest {
 				.domain(domain)
 				.build();
 		
-		int expected = -95012823;
+		int expected = -82892984;
 		
 		assertEquals(expected, shortUrl.hashCode());
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void testToString() {
 		String alias = "123";
 		Date creationDate = new Date();

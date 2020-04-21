@@ -10,6 +10,8 @@ import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrl;
 
 /**
  * Repository for short URL persistence
+ * 
+ * @see ShortUrl
  */
 public interface ShortUrlRepository extends CrudRepository<ShortUrl, String> {
 	/**

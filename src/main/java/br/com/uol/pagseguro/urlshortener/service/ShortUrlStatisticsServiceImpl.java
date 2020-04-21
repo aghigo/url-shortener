@@ -1,5 +1,7 @@
 package br.com.uol.pagseguro.urlshortener.service;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ public class ShortUrlStatisticsServiceImpl implements ShortUrlStatisticsService 
 	@Override
 	public void incrementTotalAccess(ShortUrlStatistics statistics) {
 		statistics.incrementTotalAccess();
+		statistics.setLastAccess(new Date());
 		shortUrlStatisticsRepository.save(statistics);
 	}
 

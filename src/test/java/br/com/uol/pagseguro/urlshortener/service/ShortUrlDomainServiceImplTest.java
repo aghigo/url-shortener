@@ -12,6 +12,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -43,6 +44,7 @@ public class ShortUrlDomainServiceImplTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void getDefaultDomain_when_not_found_should_create_and_return () throws ShortUrlException {
 		String name = "default";
 		long id = 1L;
@@ -70,6 +72,7 @@ public class ShortUrlDomainServiceImplTest {
 	}
 	
 	@Test
+	@Tag("UnitTest")
 	public void getDefaultDomain_when_found_should_return () throws ShortUrlException {
 		String name = "default";
 		long id = 1L;
