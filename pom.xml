@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>br.com.uol.pagseguro</groupId>
 	<artifactId>url-shortener</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<name>url-shortener</name>
 	<description>URL Shortener RESTful API Implementation. Part of PagSeguro's Software Engineer Challenge.</description>
 	<packaging>war</packaging>
