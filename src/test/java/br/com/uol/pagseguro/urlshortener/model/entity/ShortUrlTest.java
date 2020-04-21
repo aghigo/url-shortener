@@ -35,10 +35,18 @@ public class ShortUrlTest {
 		
 		shortUrl.setStatistics(statistics);
 		
+		ShortUrlDomain domain = ShortUrlDomain.builder()
+				.baseUrl("http://localhost:8080")
+				.id(1L)
+				.build();
+		
+		shortUrl.setDomain(domain);
+		
 		assertEquals(alias, shortUrl.getAlias());
 		assertEquals(creationDate, shortUrl.getCreationDate());
 		assertEquals(longUrl, shortUrl.getLongUrl());
 		assertEquals(statistics, shortUrl.getStatistics());
+		assertEquals(domain, shortUrl.getDomain());
 	}
 	
 	@Test
@@ -51,14 +59,19 @@ public class ShortUrlTest {
 				.totalAccess(1L)
 				.build();
 		
-		String domainShortUrl = "http://localhost:8080/" + alias;
+		ShortUrlDomain domain = ShortUrlDomain.builder()
+				.baseUrl("http://localhost:8080")
+				.id(1L)
+				.name("localhost")
+				.build();
 		
-		ShortUrl shortUrl = new ShortUrl(alias, longUrl, domainShortUrl, creationDate, statistics);
+		ShortUrl shortUrl = new ShortUrl(alias, longUrl, creationDate, statistics, domain);
 		
 		assertEquals(alias, shortUrl.getAlias());
 		assertEquals(creationDate, shortUrl.getCreationDate());
 		assertEquals(longUrl, shortUrl.getLongUrl());
 		assertEquals(statistics, shortUrl.getStatistics());
+		assertEquals(domain, shortUrl.getDomain());
 	}
 	
 	@Test
@@ -71,17 +84,25 @@ public class ShortUrlTest {
 				.totalAccess(1L)
 				.build();
 		
+		ShortUrlDomain domain = ShortUrlDomain.builder()
+				.baseUrl("http://localhost:8080")
+				.id(1L)
+				.name("localhost")
+				.build();
+		
 		ShortUrl shortUrl = ShortUrl.builder()
 				.alias(alias)
 				.creationDate(creationDate)
 				.longUrl(longUrl)
 				.statistics(statistics)
+				.domain(domain)
 				.build();
 		
 		assertEquals(alias, shortUrl.getAlias());
 		assertEquals(creationDate, shortUrl.getCreationDate());
 		assertEquals(longUrl, shortUrl.getLongUrl());
 		assertEquals(statistics, shortUrl.getStatistics());
+		assertEquals(domain, shortUrl.getDomain());
 	}
 	
 	@Test
@@ -89,9 +110,16 @@ public class ShortUrlTest {
 		String alias = "123";
 		Date creationDate = new Date();
 		String longUrl = "http://www.example.com";
+		
 		ShortUrlStatistics statistics = ShortUrlStatistics.builder()
 				.id(1L)
 				.totalAccess(1L)
+				.build();
+		
+		ShortUrlDomain domain = ShortUrlDomain.builder()
+				.baseUrl("http://localhost:8080")
+				.id(1L)
+				.name("localhost")
 				.build();
 		
 		ShortUrl shortUrl = ShortUrl.builder()
@@ -99,6 +127,7 @@ public class ShortUrlTest {
 				.creationDate(creationDate)
 				.longUrl(longUrl)
 				.statistics(statistics)
+				.domain(domain)
 				.build();
 		
 		assertTrue(shortUrl.equals(shortUrl));
@@ -115,13 +144,20 @@ public class ShortUrlTest {
 				.totalAccess(1L)
 				.build();
 		
+		ShortUrlDomain domain = ShortUrlDomain.builder()
+				.baseUrl("http://localhost:8080")
+				.id(1L)
+				.name("localhost")
+				.build();
+		
 		ShortUrl shortUrl = ShortUrl.builder()
 				.alias(alias)
 				.longUrl(longUrl)
 				.statistics(statistics)
+				.domain(domain)
 				.build();
 		
-		int expected = 396889866;
+		int expected = -95012823;
 		
 		assertEquals(expected, shortUrl.hashCode());
 	}
@@ -131,21 +167,27 @@ public class ShortUrlTest {
 		String alias = "123";
 		Date creationDate = new Date();
 		String longUrl = "http://www.example.com";
-		String shortUrlAddress = "http://localhost:8080/" + alias;
+		
 		ShortUrlStatistics statistics = ShortUrlStatistics.builder()
 				.id(1L)
 				.totalAccess(1L)
+				.build();
+		
+		ShortUrlDomain domain = ShortUrlDomain.builder()
+				.baseUrl("http://localhost:8080")
+				.id(1L)
+				.name("localhost")
 				.build();
 		
 		ShortUrl shortUrl = ShortUrl.builder()
 				.alias(alias)
 				.creationDate(creationDate)
 				.longUrl(longUrl)
-				.shortUrl(shortUrlAddress)
+				.domain(domain)
 				.statistics(statistics)
 				.build();
 		
-		String expected = "ShortUrl(alias=" + alias + ", longUrl=" + longUrl + ", shortUrl=" + shortUrlAddress + ", creationDate=" + creationDate + ", statistics=" + statistics + ")";
+		String expected = "ShortUrl(alias="+alias+", longUrl="+longUrl+", creationDate="+creationDate+", statistics="+statistics+", domain="+domain+")";
 		
 		assertEquals(expected, shortUrl.toString());
 	}

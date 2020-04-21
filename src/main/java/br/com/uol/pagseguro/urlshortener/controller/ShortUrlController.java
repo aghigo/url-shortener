@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.uol.pagseguro.urlshortener.exception.ShortUrlException;
+import br.com.uol.pagseguro.urlshortener.model.dto.ShortUrlDTO;
+import br.com.uol.pagseguro.urlshortener.model.dto.ShortUrlStatisticsDTO;
 import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrl;
 import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrlStatistics;
 import br.com.uol.pagseguro.urlshortener.service.ShortUrlService;
@@ -39,14 +41,15 @@ public class ShortUrlController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<ShortUrl> shortUrl(@RequestParam("longUrl") String longUrl) {
+	public ResponseEntity<ShortUrlDTO> shortUrl(@RequestParam("longUrl") String longUrl) {
 		LOGGER.info("Request: {} / longUrl = {}", HttpMethod.POST, longUrl);
 		
 		try {
 			ShortUrl shortUrl = shortUrlService.shortUrl(longUrl);
+			ShortUrlDTO dto = ShortUrlDTO.of(shortUrl);
 			
-			LOGGER.info("Response: {} {}", HttpStatus.OK, shortUrl);
-			return ResponseEntity.ok(shortUrl);
+			LOGGER.info("Response: {} {}", HttpStatus.OK, dto);
+			return ResponseEntity.ok(dto);
 		} catch (ShortUrlException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
 		}
@@ -78,9 +81,10 @@ public class ShortUrlController {
 		
 		if(shortUrl.isPresent()) {
 			ShortUrlStatistics statistics = shortUrl.get().getStatistics();
+			ShortUrlStatisticsDTO dto = ShortUrlStatisticsDTO.of(statistics);
 			
-			LOGGER.info("Response: {} {}", HttpStatus.OK, statistics);
-			return ResponseEntity.ok().body(statistics);
+			LOGGER.info("Response: {} {}", HttpStatus.OK, dto);
+			return ResponseEntity.ok().body(dto);
 		} else {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Short URL not found");
 		}

@@ -33,10 +33,10 @@ public interface ShortUrlRepository extends CrudRepository<ShortUrl, String> {
 	/**
 	 * Finds short URL data by long URL or short URL
 	 * 
-	 * @param url
+	 * @param url an URL
 	 * 
 	 * @return Short URL data, if found. {@link Optional#empty} if not found.
 	 */
-	@Query("SELECT u FROM ShortUrl u WHERE u.longUrl = :url OR u.shortUrl = :url")
+	@Query("SELECT u FROM ShortUrl u WHERE u.longUrl = :url OR CONCAT(u.domain.baseUrl, u.alias) = :url")
 	Optional<ShortUrl> findByLongUrlOrShortUrl(@Param("url") String url);
 }

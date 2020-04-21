@@ -29,7 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import br.com.uol.pagseguro.urlshortener.application.UrlShortenerApplication;
-import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrl;
+import br.com.uol.pagseguro.urlshortener.model.dto.ShortUrlDTO;
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
 
@@ -139,12 +139,12 @@ public class ShortUrlControllerIntegrationTest {
 	public void short_long_url_passing_already_short_url_should_return_short_url () {
 		String longUrl = "https://pagseguro.uol.com.br/";
 		
-		ShortUrl shortUrl = given().
+		ShortUrlDTO shortUrl = given().
 				header("Authorization", "Bearer " + getAccessToken()).
 				formParam("longUrl", longUrl).
 			when()
 				.post("/")
-			.body().as(ShortUrl.class);
+			.body().as(ShortUrlDTO.class);
 		
 		given().
 			header("Authorization", "Bearer " + getAccessToken()).
@@ -180,12 +180,12 @@ public class ShortUrlControllerIntegrationTest {
 		assertTrue(longUrlResponse.getHeaders().containsKey("Set-Cookie"));
 		assertTrue(longUrlResponse.getHeaders().get("Set-Cookie").get(0).contains("Domain=.pagseguro.uol.com.br"));
 		
-		ShortUrl shortUrl = given().
+		ShortUrlDTO shortUrl = given().
 								header("Authorization", "Bearer " + getAccessToken()).
 								formParam("longUrl", longUrl).
 							when()
 								.post("/")
-							.body().as(ShortUrl.class);
+							.body().as(ShortUrlDTO.class);
 		
 		given().
 		when()
@@ -234,12 +234,12 @@ public class ShortUrlControllerIntegrationTest {
 	public void get_short_url_statistics_passing_existing_alias_should_return_statistics_data () {
 		String longUrl = "https://www.example.com";
 		
-		ShortUrl shortUrl = given().
+		ShortUrlDTO shortUrl = given().
 				header("Authorization", "Bearer " + getAccessToken()).
 				formParam("longUrl", longUrl).
 			when()
 				.post("/")
-			.body().as(ShortUrl.class);
+			.body().as(ShortUrlDTO.class);
 		
 		given().
 		when()

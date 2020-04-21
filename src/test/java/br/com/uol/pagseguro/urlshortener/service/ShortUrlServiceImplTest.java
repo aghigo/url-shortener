@@ -18,11 +18,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.core.env.Environment;
 
 import br.com.uol.pagseguro.urlshortener.exception.ShortUrlException;
 import br.com.uol.pagseguro.urlshortener.generator.ShortUrlAliasGenerator;
 import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrl;
+import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrlDomain;
 import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrlStatistics;
 import br.com.uol.pagseguro.urlshortener.repository.ShortUrlRepository;
 
@@ -40,17 +40,17 @@ public class ShortUrlServiceImplTest {
 	private ShortUrlStatisticsService shortUrlStatisticsService;
 	
 	@Mock
-	private ShortUrlAliasGenerator shortUrlAliasGenerator;
+	private ShortUrlDomainService shortUrlDomainService;
 	
 	@Mock
-	private Environment environment;
+	private ShortUrlAliasGenerator shortUrlAliasGenerator;
 	
 	private ShortUrlService shortUrlService;
 	
 	@BeforeEach
 	public void setup () {
 		MockitoAnnotations.initMocks(this);
-		this.shortUrlService = new ShortUrlServiceImpl(environment, shortUrlRepository, shortUrlStatisticsService, shortUrlAliasGenerator);
+		this.shortUrlService = new ShortUrlServiceImpl(shortUrlRepository, shortUrlStatisticsService, shortUrlDomainService, shortUrlAliasGenerator);
 	}
 	
 	@Test
@@ -81,12 +81,17 @@ public class ShortUrlServiceImplTest {
 				.build();
 		doReturn(statistics).when(shortUrlStatisticsService).createNewStatistics();
 		
-		doReturn("http://localhost:8080/%s").when(environment).getProperty("application.domain.short-url.template");
+		ShortUrlDomain domain = ShortUrlDomain.builder()
+				.baseUrl("http://localhost:8080")
+				.id(1L)
+				.name("localhost")
+				.build(); 
 		
 		ShortUrl expectedShortUrl = ShortUrl.builder()
 				.alias(alias)
 				.creationDate(creationDate)
 				.longUrl(longUrl)
+				.domain(domain)
 				.statistics(statistics)
 				.build();
 		

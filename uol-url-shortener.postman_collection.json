@@ -112,7 +112,7 @@
 			"response": []
 		},
 		{
-			"name": "/37CVId",
+			"name": "/{alias}",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -135,7 +135,7 @@
 			"response": []
 		},
 		{
-			"name": "/37CVId/statistics",
+			"name": "/{alias}/statistics",
 			"request": {
 				"auth": {
 					"type": "bearer",

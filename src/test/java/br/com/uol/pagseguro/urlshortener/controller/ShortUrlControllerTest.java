@@ -22,6 +22,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.uol.pagseguro.urlshortener.exception.ShortUrlException;
+import br.com.uol.pagseguro.urlshortener.model.dto.ShortUrlDTO;
+import br.com.uol.pagseguro.urlshortener.model.dto.ShortUrlStatisticsDTO;
 import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrl;
 import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrlStatistics;
 import br.com.uol.pagseguro.urlshortener.service.ShortUrlService;
@@ -81,12 +83,14 @@ public class ShortUrlControllerTest {
 				.statistics(statistics)
 				.build();
 		
+		ShortUrlDTO dto = ShortUrlDTO.of(shortUrl);
+		
 		doReturn(shortUrl).when(shortUrlService).shortUrl(eq(longUrl));
 		
-		ResponseEntity<ShortUrl> response = shortUrlController.shortUrl(longUrl);
+		ResponseEntity<ShortUrlDTO> response = shortUrlController.shortUrl(longUrl);
 		
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertEquals(shortUrl, response.getBody());
+		assertEquals(dto, response.getBody());
 		
 		verify(shortUrlService, times(1)).shortUrl(eq(longUrl));
 	}
@@ -168,12 +172,14 @@ public class ShortUrlControllerTest {
 				.statistics(statistics)
 				.build();
 		
+		ShortUrlStatisticsDTO dto = ShortUrlStatisticsDTO.of(statistics);
+		
 		doReturn(Optional.ofNullable(shortUrl)).when(shortUrlService).getShortUrlByAlias(eq(alias));
 		
 		ResponseEntity<Object> response = shortUrlController.getShortUrlStatistics(alias);
 		
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertEquals(statistics, response.getBody());
+		assertEquals(dto, response.getBody());
 		
 		verify(shortUrlService, times(1)).getShortUrlByAlias(eq(alias));
 	}
