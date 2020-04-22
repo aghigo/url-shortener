@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
 /**
- * Application security configurations (oauth, authentication, public endoints etc)
+ * Application security configurations (oauth, authentication, private/public routes etc)
  */
 @SuppressWarnings("deprecation")
 @EnableWebSecurity

@@ -133,7 +133,7 @@ public class ShortUrlControllerIntegrationTest {
 	@Test
 	@Order(6)
 	@Tag("IntegrationTest")
-	public void short_long_url_passing_already_short_url_should_return_short_url () {
+	public void short_long_url_passing_short_url_as_long_url_should_return_previously_shorted_url () {
 		String longUrl = "https://pagseguro.uol.com.br/";
 		
 		ShortUrlDTO shortUrl = given().

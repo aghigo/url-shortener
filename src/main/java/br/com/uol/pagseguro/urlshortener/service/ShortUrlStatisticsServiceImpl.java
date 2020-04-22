@@ -32,7 +32,7 @@ public class ShortUrlStatisticsServiceImpl implements ShortUrlStatisticsService 
 	 * 
 	 * @param id short URL statistics unique id reference
 	 */
-	@Async
+	@Async	
 	@Override
 	public void incrementTotalAccessById(long id) {
 		LOGGER.debug("start async incrementTotalAccessById({})", id);

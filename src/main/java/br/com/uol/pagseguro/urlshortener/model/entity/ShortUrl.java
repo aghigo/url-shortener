@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -42,10 +41,10 @@ public class ShortUrl implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date creationDate;
 	
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne
 	private ShortUrlStatistics statistics;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	private ShortUrlDomain domain;
 	
 	/**

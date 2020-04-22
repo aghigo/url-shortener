@@ -26,9 +26,15 @@ import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrl;
 import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrlStatistics;
 import br.com.uol.pagseguro.urlshortener.service.ShortUrlService;
 import br.com.uol.pagseguro.urlshortener.service.ShortUrlStatisticsService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("/")
+@Api(value="Short URL")
 public class ShortUrlController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ShortUrlController.class);
 
@@ -43,7 +49,13 @@ public class ShortUrlController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<ShortUrlDTO> shortUrl(@RequestParam("longUrl") String longUrl) {
+	@ApiOperation(value = "Short a long URL", response = ShortUrlDTO.class)
+	@ApiResponses(value = {
+	        @ApiResponse(code = 200, message = "Successfully shorted URL"),
+	        @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+	        @ApiResponse(code = 400, message = "Invalid URL")
+	})
+	public ResponseEntity<ShortUrlDTO> shortUrl(@ApiParam("Long URL to be shorted") @RequestParam("longUrl") String longUrl) {
 		LOGGER.info("Request: {} / longUrl = {}", HttpMethod.POST, longUrl);
 		
 		try {
@@ -58,7 +70,14 @@ public class ShortUrlController {
 	}
 	
 	@GetMapping("/{alias}")
-	public ResponseEntity<Object> redirectToOriginalUrl(@PathVariable("alias") String alias) {
+	@Transactional
+	@ApiOperation(value = "Redirects to original URL")
+	@ApiResponses(value = {
+	        @ApiResponse(code = 303, message = "Successfully redirected to original URL"),
+	        @ApiResponse(code = 404, message = "Original URL not found"),
+	        @ApiResponse(code = 400, message = "Invalid short URL alias")
+	})
+	public ResponseEntity<Object> redirectToOriginalUrl(@ApiParam("Short URL unique alias reference") @PathVariable("alias") String alias) {
 		LOGGER.info("{} /{}", HttpMethod.GET, alias);
 		
 		Optional<ShortUrl> shortUrl = shortUrlService.getShortUrlByAlias(alias);
@@ -75,9 +94,14 @@ public class ShortUrlController {
 		}
 	}
 	
-	@Transactional
 	@GetMapping("/{alias}/statistics")
-	public ResponseEntity<Object> getShortUrlStatistics(@PathVariable("alias") String alias) {
+	@ApiOperation(value = "Get short URL statistics data", response = ShortUrlStatisticsDTO.class)
+	@ApiResponses(value = {
+	        @ApiResponse(code = 200, message = "Successfully returned short URL statistics data"),
+	        @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+	        @ApiResponse(code = 404, message = "Short URL not found"),
+	})
+	public ResponseEntity<Object> getShortUrlStatistics(@ApiParam("Short URL unique alias reference") @PathVariable("alias") String alias) {
 		LOGGER.info("Request: {} /{}/statistics", HttpMethod.GET, alias);
 		
 		Optional<ShortUrl> shortUrl = shortUrlService.getShortUrlByAlias(alias);
