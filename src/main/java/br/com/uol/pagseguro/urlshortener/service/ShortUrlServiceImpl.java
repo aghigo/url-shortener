@@ -52,6 +52,10 @@ public class ShortUrlServiceImpl implements ShortUrlService {
 		}
 		
 		String alias = shortUrlAliasGenerator.generate(formattedUrl);
+		currentShortUrl = shortUrlRepository.findByAlias(alias);
+		if(currentShortUrl.isPresent()) {
+			throw new ShortUrlException("generated alias already exists: " + alias + " and points to " + currentShortUrl.get().getLongUrl());
+		}
 		
 		ShortUrlStatistics statistics = shortUrlStatisticsService.createNewStatistics();
 		

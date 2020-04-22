@@ -25,9 +25,10 @@ public class ShortUrlStatisticsServiceImpl implements ShortUrlStatisticsService 
 
 	/**
 	 * Updates short URL statistics data:
+	 * 
 	 * <p> Increment total access by one
-	 * <p> Update last access date with current date
-	 * <p> Note: This method runs asynchronously so that the user doesn't need to wait statistics data being computed (that can be checked later by another request) and instead can be redirected to long URL faster.
+	 * <p> Updates last access date with current date
+	 * <p> Note: This method runs asynchronously so that the user doesn't need to wait statistics data being computed (this can be checked later by another request) and instead be redirected to long URL faster.
 	 * 
 	 * @param id short URL statistics unique id reference
 	 */

@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import br.com.uol.pagseguro.urlshortener.generator.ShortUrlAliasGenerator;
 import br.com.uol.pagseguro.urlshortener.generator.ShortUrlAliasHashIdsGenerator;
 
+/**
+ * Application general configurations
+ */
 @Configuration
 public class AppConfig {
 	@Bean
