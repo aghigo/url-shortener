@@ -45,18 +45,11 @@ public class ShortUrlStatistics implements Serializable {
 	public long getTotalAccess() {
 		return totalAccess;
 	}
-
-	/**
-	 * Increments the current total access value by one
-	 */
-	public void incrementTotalAccess() {
-		totalAccess++;
-	}
 	
 	/**
 	 * Gets the date of the last access
 	 * 
-	 * @return last access date. {@code null} if never accessed.
+	 * @return last access date. {@code null} if never accessed before.
 	 */
 	public Date getLastAccess() {
 		return lastAccess;

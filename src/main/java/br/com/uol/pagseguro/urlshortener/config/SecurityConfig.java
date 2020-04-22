@@ -1,4 +1,4 @@
-package br.com.uol.pagseguro.urlshortener.config.security;
+package br.com.uol.pagseguro.urlshortener.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -16,7 +16,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableWebSecurity
 @EnableAuthorizationServer
 @EnableResourceServer
-public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	@Override
 	protected AuthenticationManager authenticationManager() throws Exception {

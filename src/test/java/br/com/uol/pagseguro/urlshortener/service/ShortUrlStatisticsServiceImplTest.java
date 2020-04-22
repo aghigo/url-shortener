@@ -1,7 +1,12 @@
 package br.com.uol.pagseguro.urlshortener.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -35,15 +40,21 @@ public class ShortUrlStatisticsServiceImplTest {
 	@Tag("UnitTest")
 	public void incrementTotalAccess_should_increment_total_access_value_by_one () {
 		int totalAccess = 1;
+		long id = 1L;
 		
 		ShortUrlStatistics statistics = ShortUrlStatistics.builder()
-				.id(1L)
+				.id(id)
 				.totalAccess(totalAccess)
 				.build();
 		
-		shortUrlStatisticsService.incrementTotalAccess(statistics);
+		doReturn(Optional.ofNullable(statistics)).when(shortUrlStatisticsRepository).findById(eq(id));
 		
-		assertEquals(statistics.getTotalAccess(), totalAccess + 1);
+		shortUrlStatisticsService.incrementTotalAccessById(id);
+		
+		assertEquals(totalAccess + 1, statistics.getTotalAccess());
+		
+		verify(shortUrlStatisticsRepository, times(1)).findById(eq(id));
+		verify(shortUrlStatisticsRepository, times(1)).save(eq(statistics));
 	}
 	
 	@Test

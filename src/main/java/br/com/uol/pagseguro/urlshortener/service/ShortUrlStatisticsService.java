@@ -7,11 +7,12 @@ import br.com.uol.pagseguro.urlshortener.model.entity.ShortUrlStatistics;
  */
 public interface ShortUrlStatisticsService {
 	/**
-	 * Increments total access data from a short URL's statistics
+	 * Increments total access by one
+	 * Updates last access date with current date
 	 * 
-	 * @param statistics short URL's statistics
+	 * @param id statistics unique id
 	 */
-	void incrementTotalAccess(ShortUrlStatistics statistics);
+	void incrementTotalAccessById(long id);
 	
 	/**
 	 * Creates new initialized statistics data for a new short URL

@@ -119,9 +119,10 @@ public class ShortUrlControllerTest {
 		String shortUrlAlias = "123123";
 		String originalUrl = "http://www.google.com.br";
 		Date creationDate = new Date();
+		long id = 1L;
 		
 		ShortUrlStatistics statistics = ShortUrlStatistics.builder()
-				.id(1L)
+				.id(id)
 				.totalAccess(0)
 				.build();
 				
@@ -140,7 +141,7 @@ public class ShortUrlControllerTest {
 		assertEquals(originalUrl, response.getHeaders().get(HttpHeaders.LOCATION).get(0));
 		
 		verify(shortUrlService, times(1)).getShortUrlByAlias(eq(shortUrlAlias));
-		verify(shortUrlStatisticsService, times(1)).incrementTotalAccess(eq(statistics));
+		verify(shortUrlStatisticsService, times(1)).incrementTotalAccessById(eq(id));
 	}
 	
 	@Test

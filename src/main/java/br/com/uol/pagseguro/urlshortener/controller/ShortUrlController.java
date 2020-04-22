@@ -2,6 +2,8 @@ package br.com.uol.pagseguro.urlshortener.controller;
 
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +64,7 @@ public class ShortUrlController {
 		Optional<ShortUrl> shortUrl = shortUrlService.getShortUrlByAlias(alias);
 		
 		if(shortUrl.isPresent()) {
-			shortUrlStatisticsService.incrementTotalAccess(shortUrl.get().getStatistics());
+			shortUrlStatisticsService.incrementTotalAccessById(shortUrl.get().getStatistics().getId());
 			
 			String longUrl = shortUrl.get().getLongUrl();
 			LOGGER.info("Redirect to {}", longUrl);
@@ -73,6 +75,7 @@ public class ShortUrlController {
 		}
 	}
 	
+	@Transactional
 	@GetMapping("/{alias}/statistics")
 	public ResponseEntity<Object> getShortUrlStatistics(@PathVariable("alias") String alias) {
 		LOGGER.info("Request: {} /{}/statistics", HttpMethod.GET, alias);
