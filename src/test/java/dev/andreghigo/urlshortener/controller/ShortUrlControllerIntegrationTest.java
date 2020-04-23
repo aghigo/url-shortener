@@ -117,8 +117,8 @@ public class ShortUrlControllerIntegrationTest {
 	@Order(5)
 	@Tag("IntegrationTest")
 	public void short_long_url_passing_valid_long_url_should_create_new_short_url_and_return_short_url () {
-		String longUrl = "https://pagseguro.uol.com.br/";
-		String alias = "laFvIy";
+		String longUrl = "https://www.google.com.br/";
+		String alias = "zkHVIo";
 		
 		given().
 			header("Authorization", "Bearer " + getAccessToken()).
@@ -135,7 +135,7 @@ public class ShortUrlControllerIntegrationTest {
 	@Order(6)
 	@Tag("IntegrationTest")
 	public void short_long_url_passing_short_url_as_long_url_should_return_previously_shorted_url () {
-		String longUrl = "https://pagseguro.uol.com.br/";
+		String longUrl = "https://www.google.com/";
 		
 		ShortUrlDTO shortUrl = given().
 				header("Authorization", "Bearer " + getAccessToken()).
@@ -173,12 +173,13 @@ public class ShortUrlControllerIntegrationTest {
 	@Order(8)
 	@Tag("IntegrationTest")
 	public void redirect_to_original_url_passing_valid_short_url_alias_and_original_url_found_should_redirect_to_long_url () {
-		String longUrl = "https://pagseguro.uol.com.br";
+		String longUrl = "https://www.google.com.br";
 
 		ResponseEntity<String> longUrlResponse = restTemplate.getForEntity(longUrl, String.class);
 		
 		assertTrue(longUrlResponse.getHeaders().containsKey("Set-Cookie"));
-		assertTrue(longUrlResponse.getHeaders().get("Set-Cookie").get(0).contains("Domain=.pagseguro.uol.com.br"));
+		String setCookieContent = "domain=.google.com.br";
+		assertTrue(longUrlResponse.getHeaders().get("Set-Cookie").get(0).contains(setCookieContent));
 		
 		ShortUrlDTO shortUrl = given().
 								header("Authorization", "Bearer " + getAccessToken()).
@@ -192,7 +193,7 @@ public class ShortUrlControllerIntegrationTest {
 			.get("/" + shortUrl.getAlias()).
 		then().
 			statusCode(HttpStatus.OK.value()).
-			 header("Set-Cookie", containsString("Domain=.pagseguro.uol.com.br"));
+			 header("Set-Cookie", containsString(setCookieContent));
 	}
 	
 	@Test

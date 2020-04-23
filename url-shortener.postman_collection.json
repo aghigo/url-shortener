@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "49f7e8d4-2fd6-4f05-bcbc-428f564d4cba",
-		"name": "UOL URL Shortener",
+		"_postman_id": "fe0c28e9-17f3-4121-8d84-4adc0c3fa42b",
+		"name": "url-shortener",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -167,6 +167,28 @@
 				"description": "Get statistics data about short URL access"
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "d8d25958-e44d-4f77-8c46-d43ba25c6f20",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "6d8f79a6-0132-4350-a8cd-726fbf52c477",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"protocolProfileBehavior": {}
