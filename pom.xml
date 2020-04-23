@@ -9,11 +9,11 @@
 		<version>2.2.6.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>br.com.uol.pagseguro</groupId>
+	<groupId>dev.andreghigo</groupId>
 	<artifactId>url-shortener</artifactId>
 	<version>1.1.0</version>
 	<name>url-shortener</name>
-	<description>URL Shortener RESTful API Implementation. Part of PagSeguro's Software Engineer Challenge.</description>
+	<description>URL Shortener RESTful API Implementation.</description>
 	<packaging>war</packaging>
 
 	<properties>
