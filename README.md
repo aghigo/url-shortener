@@ -132,5 +132,4 @@ ser redirecionado para a URL original rapidamente, e consultar os dados estatís
 
 ## Arquitetura da aplicação
 
-[image](docs/desenho-arquitetura.png)
-
+<img src="https://github.com/aghigo/url-shortener/blob/master/docs/desenho-arquitetura.png"/>
