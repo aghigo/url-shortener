@@ -16,7 +16,7 @@
 
         <listeners>
             <listener>
-                <class>br.com.uol.pagseguro.urlshortener.logger.CacheLogger</class>
+                <class>dev.andreghigo.urlshortener.logger.CacheLogger</class>
                 <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
                 <event-ordering-mode>UNORDERED</event-ordering-mode>
                 <events-to-fire-on>CREATED</events-to-fire-on>
@@ -34,7 +34,7 @@
     
     <cache alias="shortUrlCache" uses-template="shortUrlCacheTemplate">
         <key-type>java.lang.String</key-type>
-        <value-type>br.com.uol.pagseguro.urlshortener.model.entity.ShortUrl</value-type>
+        <value-type>dev.andreghigo.urlshortener.model.entity.ShortUrl</value-type>
     </cache>
 
 </config>

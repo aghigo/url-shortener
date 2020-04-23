@@ -1,4 +1,5 @@
-# uol-url-shortener
+
+# url-shortener
 
 Serviço de encurtamento de URL's disponibilizado via API REST. Trata-se de uma POC. 
 
@@ -18,14 +19,11 @@ Serviço de encurtamento de URL's disponibilizado via API REST. Trata-se de uma 
 
 ### Java 8
 
-Linguagem de programação orientada a objetos com plataforma
-robusta para aplicações enterprise. Versão 8 da linguagem Java, é LTS e atualmente a mais utilizada.
-
-## Maven
+### Maven
 
 Para build e gerenciamento de dependências da aplicação
 
-### Spring Boot
+#### Spring Boot
 Para a criação da aplicação API RESTful
 
 #### Spring Data JPA + Hibernate + MySQL (H2 para testes)
@@ -33,7 +31,7 @@ Para persistência em banco de dados relacional.
 O banco escolhido foi o MySQL por motivos práticos.
 Por fazer parte da especificação JPA, podemos migrar para outra solução de RDBS.
 *Observação: para fins de testes, foi utilizado o banco relacional em memória H2.*
-As conexões com o banco são gerenciadas via pool de conexões com hikariCP.
+*As conexões com o banco são gerenciadas via pool de conexões com hikariCP.*
 
 #### Spring Security
 Segurança da aplicação.
@@ -73,83 +71,66 @@ documentação da API RESTful
 #### Postman
 Para testar os endpoints da API RESTful
 
-#### JUnit + Mockito
-Testes unitários
-#### RestAssured
-Testes de integração
+#### JUnit + Mockito + RestAssured
+Testes unitários e de Integração
 
 ## Design do código
 O código da aplicação está dividido em camadas, cada uma com suas responsabilidades
 bem definidas, seguindo os principios SOLID e injeção de dependências.
 
-application -> entry point (main) da aplicação
+- application -> entry point (main) da aplicação
 
-config -> configurações da aplicação (cache, segurança, etc)
+- config -> configurações da aplicação (cache, segurança, etc)
 
-controller -> mapeia os endpoints da API RESTful,
+- controller -> mapeia os endpoints da API RESTful,
 recebe as requisições e devolve as respostas de sucesso/erro.
 
-exception -> exceções de negócio da aplicação (e.g. URL não encontrada,
+- exception -> exceções de negócio da aplicação (e.g. URL não encontrada,
 falha ao encurtar URL etc).
 
-generator -> classes utilitárias para geração de hash/alias
+- generator -> classes utilitárias para geração de hash/alias
 de URL curta.
 
-logger -> configurações de log da aplicação
+- logger -> configurações de log da aplicação
 
-service -> regras de negócio da aplicação.
+- service -> regras de negócio da aplicação.
 encurtar URL, validar URL, verificar se URL existe, etc.
 
-repository -> padrão Repository para persistência
+- repository -> padrão Repository para persistência
 dos dados em banco relacional utilizando JPA e Hibernate.
 
-model.dto -> DTO (Data Transfer Objects) objetos imutáveis e serializaveis
+- model.dto -> DTO (Data Transfer Objects) objetos imutáveis e serializaveis
 para trafegar na rede. Serve como payload de requisição e resposta da API,
 de maneira que fique desacoplada das entidades do domínio da aplicação.
 
-model.entity -> Entidades de domínio da aplicação (e.g. url curta, dados
+- model.entity -> Entidades de domínio da aplicação (e.g. url curta, dados
 estatisticos) que são persistidas e a partir das quais são
 aplicadas as regras de negócio na camada de serviço.
 
-Entidades:
-ShortUrl -> Armazena a url curta, mapeando o id com a url original
+### Entidades:
 
-ShortUrlDomain -> dominio ao qual a url curta pertence.
+- ShortUrl -> Armazena a URL curta, mapeando o id com a URL original
+
+- ShortUrlDomain -> Domínio ao qual a URL curta pertence.
 Util para caso a aplicação esteja em domínios diferentes.
 
-Expor o ip da máquina diretamente é arriscado, pois a mesma pode estar em rede/cloud privada, ou por trás de uma API gateway ou um load balancer. Ou seja, pode não ser acessível diretamente.
+Expor o IP da máquina diretamente é arriscado, pois a mesma pode estar em rede privada, ou por trás de uma API gateway ou de um Load balancer. Ou seja, pode não ser acessível diretamente.
 
-Não é uma boa ideia persistir a url curta completa para
+Não é uma boa ideia persistir a URL curta completa para
 cada registro da entidade ShortUrl pois em caso de mudança de domínio,
 dará mais trabalho atualizar milhares de colunas no banco de dados.
-Desta forma, basta atualizar 1 registro de domínio para que todas as urls curtas
+Desta forma, basta atualizar 1 registro de domínio para que todas as URL curtas
 associadas sejam refletidas sem impacto na aplicação.
 
-ShortUrlStatistics -> dados estatísticos da URL encurtada como
-quantas vezes essa url foi acessada? quando foi a ultima vez em que
+- ShortUrlStatistics -> dados estatísticos da URL encurtada como
+quantas vezes essa URL foi acessada? quando foi a ultima vez em que
 ela foi acessada?
 
-Observação: as estatísticas são computadas sempre quando o usuário
-acessar a url curta, ao ser redirecionado para a url original, porém de forma assíncrona (com thread pool configurada
-para suportar multiplas requisições), para que o cliente
-não precise esperar terminar o processamento dos dados, ele pode
-ser redirecionado para a URL original rapidamente, e consultar os dados estatísticos posteriormente.
+*Observação: As estatísticas são computadas quando o usuário
+acessa a URL curta. Ao ser redirecionado para a URL original, as estatísticas são atualizadas de forma assíncrona (com Thread pool configurada para suportar múltiplas requisições), para que o cliente não precise esperar terminar o processamento dos dados, assim, ele pode
+ser redirecionado para a URL original rapidamente, e consultar os dados estatísticos posteriormente.*
 
 ## Arquitetura da aplicação
 
-Artefato gerado no formato .war compatível com diversos servidores de aplicação java do mercado.
-
-O servidor Java escolhido foi o Tomcat 8.5 por ser um servidor conhecido,
-rápido e de fácil configuração e deploy de aplicações Java.
-
-Foi utilizado o elastic beanstalk (free-tier) da aws para deploy na núvem. Desta forma
-pode ser configurado posteriormente clusterirzação e balanceamento de carga, bem como efetuar monitoramento.
-
-Para o banco de dados, foi utilizado uma instância RDS (free-tier)  da AWS, com MySQL.
-
-## Pipeline de CI/CD
-
-Foi configurado um pipeline simples de CI/CD: 
-
-Github (Actions) -> CodePipeline (AWS) -> Sonar Cloud + Coveralls -> Elastic Beanstalk
+[image](docs/desenho-arquitetura.png)
 
