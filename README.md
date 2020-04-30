@@ -1,7 +1,11 @@
 
+
 # url-shortener
 
 Serviço de encurtamento de URL's disponibilizado via API REST. Trata-se de uma POC. 
+
+Disponível em:
+[http://uolurlshortener-env.eba-qxnpezmw.us-east-2.elasticbeanstalk.com/](http://uolurlshortener-env.eba-qxnpezmw.us-east-2.elasticbeanstalk.com/)
 
 # Instruções
 
