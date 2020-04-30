@@ -19,7 +19,7 @@ Utilize os endpoints do postman para consumir o serviço.
 
 `mvn clean test`
 
-# Decisções de Arquitetura
+# Decisões de Arquitetura
 
 ## Técnologias utilizadas e motivações
 
