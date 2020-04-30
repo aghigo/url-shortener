@@ -118,7 +118,7 @@ aplicadas as regras de negócio na camada de serviço.
 - ShortUrlDomain -> Domínio ao qual a URL curta pertence.
 Util para caso a aplicação esteja em domínios diferentes.
 
-Expor o IP da máquina diretamente é arriscado, pois a mesma pode estar em rede privada, ou por trás de uma API gateway ou de um Load balancer. Ou seja, pode não ser acessível diretamente.
+Expor o IP da máquina diretamente é arriscado, por questões de segurança e porque a mesma pode estar em rede privada, ou por trás de uma API gateway ou de um Load balancer. Ou seja, pode não ser acessível diretamente.
 
 Não é uma boa ideia persistir a URL curta completa para
 cada registro da entidade ShortUrl pois em caso de mudança de domínio,
@@ -127,12 +127,7 @@ Desta forma, basta atualizar 1 registro de domínio para que todas as URL curtas
 associadas sejam refletidas sem impacto na aplicação.
 
 - ShortUrlStatistics -> dados estatísticos da URL encurtada como
-quantas vezes essa URL foi acessada? quando foi a ultima vez em que
-ela foi acessada?
-
-*Observação: As estatísticas são computadas quando o usuário
-acessa a URL curta. Ao ser redirecionado para a URL original, as estatísticas são atualizadas de forma assíncrona (com Thread pool configurada para suportar múltiplas requisições), para que o cliente não precise esperar terminar o processamento dos dados, assim, ele pode
-ser redirecionado para a URL original rapidamente, e consultar os dados estatísticos posteriormente.*
+quantas vezes essa URL foi acessada?
 
 ## Arquitetura da aplicação
 
