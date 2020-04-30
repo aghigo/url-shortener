@@ -7,6 +7,8 @@ Serviço de encurtamento de URL's disponibilizado via API REST. Trata-se de uma 
 Disponível em:
 [http://uolurlshortener-env.eba-qxnpezmw.us-east-2.elasticbeanstalk.com/](http://uolurlshortener-env.eba-qxnpezmw.us-east-2.elasticbeanstalk.com/)
 
+Utilize os endpoints do postman para consumir o serviço.
+
 # Instruções
 
 ## Como executar a aplicação?
